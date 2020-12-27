@@ -12,12 +12,9 @@ function Planets() {
   const [currentPage, setCurrentPage] = useState(0);
   const [currentData, setCurrentData] = useState(null);
   const {
-    data,
     status,
     hasNextPage,
-    hasPreviousPage,
     fetchNextPage,
-    fetchPreviousPage,
   } = useInfiniteQuery('planets', fetchPlanets, {
     staleTime: 1000000,
     // cacheTime: 10,
@@ -26,19 +23,14 @@ function Planets() {
 
       return next && next.slice(next.lastIndexOf('=') + 1);
     },
-    getPreviousPageParam: (firstPage) => {
-      const { previous } = firstPage;
-
-      return previous && previous.slice(previous.lastIndexOf('=') + 1);
-    },
+    // getPreviousPageParam: (firstPage) => {
+    //   const { previous } = firstPage;
+    //   console.log('🚀 ~ file: Planets.js ~ line 31 ~ Planets ~ previous', previous);
+    // },
     onSuccess: ({ pages }) => {
       setCurrentData(pages[currentPage].results);
     },
-    // getFetchMore: (lastGroup, allGroup) => {
-    // }
   });
-  console.log('🚀 ~ file: Planets.js ~ line 22 ~ Planets ~ status', status);
-  console.log('data', data);
 
   return (
     <div className="Planets">
@@ -54,24 +46,13 @@ function Planets() {
       >
         Next
       </button>
-      <button
-        disabled={ !hasPreviousPage }
-        onClick={ () => {
-          if (hasPreviousPage) {
-            fetchPreviousPage();
-            setCurrentPage(currentPage - 1);
-          }
-        } }
-      >
-        Prev
-      </button>
       { status === 'error' && (
         <div>Error fetching data</div>
       ) }
       { status === 'loading' && (
         <div>Loading data...</div>
       ) }
-      { status === 'success' && (
+      { status === 'success' && currentData && (
         <div>
           { currentData.map(planet => <Planet key={ planet.name } planet={ planet } />) }
         </div>
