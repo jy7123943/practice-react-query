@@ -11,7 +11,6 @@ const fetchPlanets = async () => {
 function Planets() {
   const { data, status } = useQuery('planets', fetchPlanets);
 
-
   return (
     <div className="Planets">
       <h2>Planets</h2>
